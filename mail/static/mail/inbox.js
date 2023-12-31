@@ -28,13 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(response => response.json())
     .then(result => {
-        // Print result
-        console.log(result);
+      // Print result
+      console.log(result);
+      load_mailbox('sent');
+    })
+    .catch(error => {
+      // Handle error
+      console.error('An error occurred:', error);
     });
-
-      submitCount++;
-      console.log('Form submitted ' + submitCount + ' times.');
-
   });
 
   // By default, load the inbox
