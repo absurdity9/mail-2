@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email() {
 
   // Show compose view and hide other views
+  document.querySelector('#detail-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
@@ -56,6 +57,7 @@ function compose_email() {
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
+  document.querySelector('#detail-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
@@ -76,10 +78,17 @@ function load_mailbox(mailbox) {
         const recipient = email.sender;
         const subject = email.subject;
         const timestamp = email.timestamp;
+        const emailId = email.id;
+
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('row');
         rowDiv.style.padding = '4px'; 
         rowDiv.style.border = '1px solid black'; 
+
+        rowDiv.addEventListener('click', () => {
+          load_detail(emailId); 
+        });
+
         const recipientDiv = document.createElement('div');
         recipientDiv.classList.add('mr-3'); 
         const subjectDiv = document.createElement('div');
@@ -116,6 +125,23 @@ function load_detail(emailId){
     document.querySelector('#detail-view').style.display = 'block';
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
+    const detailView = document.getElementById("detail-view");
 
     console.log(emailId);
+
+    const replyBtn = document.createElement('button');
+    replyBtn.classList.add('btn', 'btn-primary');
+    replyBtn.textContent = 'Reply';
+    replyBtn.classList.add('mr-3');
+
+    const archiveBtn = document.createElement('button');
+    archiveBtn.classList.add('btn', 'btn-secondary');
+    archiveBtn.textContent = 'Archive';
+
+    const buttonDiv = document.createElement('div');
+    buttonDiv.classList.add('col-12', 'mt-2');
+    buttonDiv.appendChild(replyBtn);
+    buttonDiv.appendChild(archiveBtn);
+
+    detailView.appendChild(buttonDiv);
 }
