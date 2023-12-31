@@ -78,7 +78,7 @@ function load_mailbox(mailbox) {
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('row');
         rowDiv.style.padding = '4px'; 
-        rowDiv.style.border = '1px solid black'; /
+        rowDiv.style.border = '1px solid black'; 
         const recipientDiv = document.createElement('div');
         recipientDiv.classList.add('mr-3'); 
         const subjectDiv = document.createElement('div');
