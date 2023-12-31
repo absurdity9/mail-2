@@ -5,7 +5,37 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
-  document.getElementById("compose-form").addEventListener("submit", send);
+ 
+  const form = document.getElementById('compose-form');
+  let submitCount = 0;
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const recipientsInput = document.getElementById("compose-recipients");
+    const subjectInput = document.getElementById("compose-subject");
+    const bodyInput = document.getElementById("compose-body");
+    const recipients = recipientsInput.value;
+    const subject = subjectInput.value;
+    const body = bodyInput.value;
+
+    fetch('/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+        recipients: recipients,
+        subject: subject,
+        body: body
+      })
+    })
+    .then(response => response.json())
+    .then(result => {
+        // Print result
+        console.log(result);
+    });
+
+      submitCount++;
+      console.log('Form submitted ' + submitCount + ' times.');
+
+  });
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -31,24 +61,4 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-}
-
-function send(event) {
-  const recipients = document.getElementById("compose-recipients").value;
-  const subject = document.getElementById("compose-subject").value;
-  const body = document.getElementById("compose-body").value;
-
-  fetch('/emails', {
-    method: 'POST',
-    body: JSON.stringify({
-        recipients: 'baz@example.com',
-        subject: 'Meeting time',
-        body: 'How about we meet tomorrow at 3pm?'
-    })
-  })
-  .then(response => response.json())
-  .then(result => {
-      // Print result
-      console.log(result);
-  });
 }
