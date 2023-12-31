@@ -85,7 +85,9 @@ function load_mailbox(mailbox) {
         subjectDiv.classList.add('mr-3');
         const timestampDiv = document.createElement('div');
         timestampDiv.classList.add('mr-3');
-  
+        timestampDiv.style.flexGrow = '1'; 
+        timestampDiv.style.textAlign = 'right'; 
+
         recipientDiv.textContent = recipient;
         subjectDiv.textContent = subject;
         timestampDiv.textContent = timestamp;
@@ -94,6 +96,12 @@ function load_mailbox(mailbox) {
         rowDiv.appendChild(subjectDiv);
         rowDiv.appendChild(timestampDiv);
   
+         if (email.read) {
+          rowDiv.style.backgroundColor = 'white'; 
+        } else {
+          rowDiv.style.backgroundColor = '#D9D9D9'; 
+        }
+
         columnDiv.appendChild(rowDiv);
       });
   
