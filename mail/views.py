@@ -71,7 +71,7 @@ def compose(request):
 
     return JsonResponse({"message": "Email sent successfully."}, status=201)
 
-
+@csrf_exempt
 @login_required
 def mailbox(request, mailbox):
 
