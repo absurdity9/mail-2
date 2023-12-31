@@ -142,6 +142,15 @@ function load_detail(emailId){
     buttonDiv.classList.add('col-12', 'mt-2');
     buttonDiv.appendChild(replyBtn);
     buttonDiv.appendChild(archiveBtn);
-
     detailView.appendChild(buttonDiv);
+
+    fetch(`/emails/${emailId}`)
+    .then(response => response.json())
+    .then(email => {
+        // Print email
+        console.log(email);
+
+        // ... do something else with email ...
+});
+
 }
