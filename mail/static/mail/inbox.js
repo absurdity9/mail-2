@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
- 
+  document.querySelector('#detail-view').style.display = 'none';
+
   const form = document.getElementById('compose-form');
   let submitCount = 0;
   form.addEventListener('submit', function(event) {
@@ -110,3 +111,11 @@ function load_mailbox(mailbox) {
     });  
   }
   
+function load_detail(emailId){
+    // Show the mailbox and hide other views
+    document.querySelector('#detail-view').style.display = 'block';
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+
+    console.log(emailId);
+}
