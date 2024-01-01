@@ -74,22 +74,24 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
-  
+  const detailView = document.querySelector('#detail-view');
+  while (detailView.firstChild) {
+    detailView.removeChild(detailView.firstChild);
+  }
   // Show the mailbox and hide other views
   document.querySelector('#detail-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
   console.log('Mailbox:', mailbox);
-
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
       // Print emails
       console.log(emails);
-
       const columnDiv = document.createElement('div');
       columnDiv.classList.add('column');
   
@@ -97,7 +99,7 @@ function load_mailbox(mailbox) {
         const recipient = email.sender;
         const subject = email.subject;
         const timestamp = email.timestamp;
-        const emailId = email.id;
+        const emailId = email.id
 
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('row');
@@ -105,7 +107,20 @@ function load_mailbox(mailbox) {
         rowDiv.style.border = '1px solid black'; 
 
         rowDiv.addEventListener('click', () => {
-          load_detail(emailId); 
+          fetch(`/emails/${emailId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              read: true
+            })
+          })
+            .then(response => {
+              if (response.ok) {
+                console.log(`Email with ID ${emailId} marked as read`);
+                load_detail(emailId);
+              } else {
+                console.log(`Error marking email with ID ${emailId} as read`);
+              }
+            });
         });
 
         const recipientDiv = document.createElement('div');
