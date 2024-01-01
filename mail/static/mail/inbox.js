@@ -121,7 +121,6 @@ function load_mailbox(mailbox) {
   }
   
 function load_detail(emailId){
-    // Show the mailbox and hide other views
     document.querySelector('#detail-view').style.display = 'block';
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
@@ -139,18 +138,61 @@ function load_detail(emailId){
     archiveBtn.textContent = 'Archive';
 
     const buttonDiv = document.createElement('div');
-    buttonDiv.classList.add('col-12', 'mt-2');
+    buttonDiv.classList.add('col-12', 'mt-2', 'mb-4');
     buttonDiv.appendChild(replyBtn);
     buttonDiv.appendChild(archiveBtn);
     detailView.appendChild(buttonDiv);
 
+    let replySender;
+    let replySubject;
+    let replyTimestamp;
+
     fetch(`/emails/${emailId}`)
     .then(response => response.json())
     .then(email => {
-        // Print email
+      replySender = email.sender;
+      replySubject = email.subject;
+      replyTimestamp = email.timestamp;
         console.log(email);
-
-        // ... do something else with email ...
+        const senderDiv = document.createElement('div');
+        senderDiv.classList.add('row');
+        senderDiv.style.padding = '4px';
+        senderDiv.style.border = '1px solid black';
+        senderDiv.textContent = `Sender: ${email.sender}`;
+        detailView.appendChild(senderDiv);
+  
+        const recipientsDiv = document.createElement('div');
+        recipientsDiv.classList.add('row');
+        recipientsDiv.style.padding = '4px';
+        recipientsDiv.style.border = '1px solid black';
+        recipientsDiv.textContent = `Recipients: ${email.recipients.join(', ')}`;
+        detailView.appendChild(recipientsDiv);
+  
+        const subjectDiv = document.createElement('div');
+        subjectDiv.classList.add('row');
+        subjectDiv.style.padding = '4px';
+        subjectDiv.style.border = '1px solid black';
+        subjectDiv.textContent = `Subject: ${email.subject}`;
+        detailView.appendChild(subjectDiv);
+  
+        const timestampDiv = document.createElement('div');
+        timestampDiv.classList.add('row');
+        timestampDiv.style.padding = '4px';
+        timestampDiv.style.border = '1px solid black';
+        timestampDiv.textContent = `Timestamp: ${email.timestamp}`;
+        detailView.appendChild(timestampDiv);
+  
+        const bodyDiv = document.createElement('div');
+        bodyDiv.classList.add('row');
+        bodyDiv.style.padding = '4px';
+        bodyDiv.style.border = '1px solid black';
 });
 
+      replyBtn.addEventListener('click', function() {
+        localStorage.setItem('replySender', replySender);
+        localStorage.setItem('replySubject', replySubject);
+        localStorage.setItem('replyTimestamp', replyTimestamp);
+
+        compose_email();
+      });
 }
