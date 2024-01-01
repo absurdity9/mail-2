@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
-
   // Show compose view and hide other views
   document.querySelector('#detail-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
@@ -52,6 +51,26 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+
+  // Check localStorage for reply values
+  if (localStorage.getItem('replySender') && localStorage.getItem('replySubject') && localStorage.getItem('replyTimestamp')) {
+    // Retrieve values from localStorage
+    const replySender = localStorage.getItem('replySender');
+    const replySubject = localStorage.getItem('replySubject');
+    const replyTimestamp = localStorage.getItem('replyTimestamp');
+    const replyBody = localStorage.getItem('replyBody');
+
+    // Set values to the input fields
+    document.querySelector('#compose-recipients').value = replySender;
+    document.querySelector('#compose-subject').value = `Re: ${replySubject}`;
+    const composeBody = `On ${replyTimestamp} ${replySender} wrote: ${replyBody}`;
+    document.querySelector('#compose-body').value = composeBody;
+
+    // Clear localStorage
+    localStorage.removeItem('replySender');
+    localStorage.removeItem('replySubject');
+    localStorage.removeItem('replyTimestamp');
+  }
 }
 
 function load_mailbox(mailbox) {
@@ -146,6 +165,7 @@ function load_detail(emailId){
     let replySender;
     let replySubject;
     let replyTimestamp;
+    let replyBody;
 
     fetch(`/emails/${emailId}`)
     .then(response => response.json())
@@ -153,6 +173,8 @@ function load_detail(emailId){
       replySender = email.sender;
       replySubject = email.subject;
       replyTimestamp = email.timestamp;
+      replyBody = email.body;
+
         console.log(email);
         const senderDiv = document.createElement('div');
         senderDiv.classList.add('row');
@@ -186,12 +208,15 @@ function load_detail(emailId){
         bodyDiv.classList.add('row');
         bodyDiv.style.padding = '4px';
         bodyDiv.style.border = '1px solid black';
+        bodyDiv.textContent = `Body: ${email.body}`;
+        detailView.appendChild(bodyDiv);
 });
 
       replyBtn.addEventListener('click', function() {
         localStorage.setItem('replySender', replySender);
         localStorage.setItem('replySubject', replySubject);
         localStorage.setItem('replyTimestamp', replyTimestamp);
+        localStorage.setItem('replyBody', replyBody);
 
         compose_email();
       });
