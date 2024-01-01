@@ -170,11 +170,17 @@ function load_detail(emailId){
     const archiveBtn = document.createElement('button');
     archiveBtn.classList.add('btn', 'btn-secondary');
     archiveBtn.textContent = 'Archive';
+    archiveBtn.classList.add('mr-3');
+
+    const unarchiveBtn = document.createElement('button');
+    unarchiveBtn.classList.add('btn', 'btn-secondary');
+    unarchiveBtn.textContent = 'Unarchive';
 
     const buttonDiv = document.createElement('div');
     buttonDiv.classList.add('col-12', 'mt-2', 'mb-4');
     buttonDiv.appendChild(replyBtn);
     buttonDiv.appendChild(archiveBtn);
+    buttonDiv.appendChild(unarchiveBtn);
     detailView.appendChild(buttonDiv);
 
     let replySender;
@@ -189,6 +195,7 @@ function load_detail(emailId){
       replySubject = email.subject;
       replyTimestamp = email.timestamp;
       replyBody = email.body;
+      archived_status = email.archived;
 
         console.log(email);
         const senderDiv = document.createElement('div');
@@ -227,6 +234,14 @@ function load_detail(emailId){
         bodyDiv.style.padding = '4px';
         bodyDiv.textContent = `${email.body}`;
         detailView.appendChild(bodyDiv);
+
+        if (email.archived) {
+          // Email is archived, hide the archive button
+          archiveBtn.style.display = 'none';
+        } else {
+          // Email is not archived, hide the unarchive button
+          unarchiveBtn.style.display = 'none';
+        }
 });
 
       replyBtn.addEventListener('click', function() {
@@ -234,7 +249,6 @@ function load_detail(emailId){
         localStorage.setItem('replySubject', replySubject);
         localStorage.setItem('replyTimestamp', replyTimestamp);
         localStorage.setItem('replyBody', replyBody);
-
         compose_email();
       });
 
@@ -254,4 +268,21 @@ function load_detail(emailId){
             }
           });
       });
+
+      unarchiveBtn.addEventListener('click', function() {
+        fetch(`/emails/${emailId}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            archived: false
+          })
+        })
+          .then(response => {
+            if (response.ok) {
+              console.log(`Email with ID ${emailId} marked as unarchived`);
+              load_mailbox('inbox');
+            } else {
+              console.log(`Error marking email with ID ${emailId} as unarchived`);
+            }
+          });
+        });
 }
