@@ -218,12 +218,14 @@ function load_detail(emailId){
         timestampDiv.style.border = '1px solid black';
         timestampDiv.textContent = `Timestamp: ${email.timestamp}`;
         detailView.appendChild(timestampDiv);
+
+        const divider = document.createElement('hr');
+        detailView.appendChild(divider);
   
         const bodyDiv = document.createElement('div');
         bodyDiv.classList.add('row');
         bodyDiv.style.padding = '4px';
-        bodyDiv.style.border = '1px solid black';
-        bodyDiv.textContent = `Body: ${email.body}`;
+        bodyDiv.textContent = `${email.body}`;
         detailView.appendChild(bodyDiv);
 });
 
@@ -234,5 +236,22 @@ function load_detail(emailId){
         localStorage.setItem('replyBody', replyBody);
 
         compose_email();
+      });
+
+      archiveBtn.addEventListener('click', function() {
+        fetch(`/emails/${emailId}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            archived: true
+          })
+        })
+          .then(response => {
+            if (response.ok) {
+              console.log(`Email with ID ${emailId} marked as archived`);
+              load_mailbox(inbox);
+            } else {
+              console.log(`Error marking email with ID ${emailId} as archived`);
+            }
+          });
       });
 }
